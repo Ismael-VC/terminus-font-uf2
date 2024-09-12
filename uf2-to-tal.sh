@@ -8,7 +8,7 @@ output_file="terminus.tal"
 xxd -g 1 -c 16 "$input_file" | \
 cut -d' ' -f2-17 | \
 awk '{
-    printf "%s %s %s %s %s %s %s %s  %s %s %s %s %s %s %s %s\n", \
+    printf "%s%s %s%s %s%s %s%s  %s%s %s%s %s%s %s%s\n", \
     $1, $2, $3, $4, $5, $6, $7, $8, \
     $9, $10, $11, $12, $13, $14, $15, $16
 }' > "$temp_file"
