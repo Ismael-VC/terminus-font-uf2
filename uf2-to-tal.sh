@@ -5,15 +5,20 @@ input_file="terminus.uf2"
 temp_file="temp_hex.tal"
 output_file="terminus.tal"
 
-# Generate the hex dump with spaces between bytes
-xxd -g 1 -c 16 "$input_file" | cut -d' ' -f2-17 | awk '{printf "%s %s %s %s %s %s %s %s  %s %s %s %s %s %s %s %s\n", $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16}' > "$temp_file"
+xxd -g 1 -c 16 "$input_file" | \
+cut -d' ' -f2-17 | \
+awk '{
+    printf "%s %s %s %s %s %s %s %s  %s %s %s %s %s %s %s %s\n", \
+    $1, $2, $3, $4, $5, $6, $7, $8, \
+    $9, $10, $11, $12, $13, $14, $15, $16
+}' > "$temp_file"
 
 # Extract the first 256 bytes (16 lines * 16 bytes per line = 256 bytes)
 head -n 16 "$temp_file" > "first_256_bytes.tal"
 tail -n +17 "$temp_file" > "remaining_bytes.tal"
 
 # Concatenate
-echo "@font-mono ( Terminus 8x16 )" > "$output_file"
+echo "@font-terminus-mono-8x16" > "$output_file"
 cat "first_256_bytes.tal" >> "$output_file"
 echo "&glyphs" >> "$output_file"
 cat "remaining_bytes.tal" >> "$output_file"
