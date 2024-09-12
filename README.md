@@ -10,12 +10,11 @@ $ uxncli turye.rom terminus.uf2
 
 ## Convert
 
-### `terminus.uf2` to `terminus.tal`
-
 ```bash
-bin/uf2-to-tal.sh
+$ bin/uf2-to-tal.sh
 ```
 
 ## Info
 
 * [UFX Format](https://wiki.xxiivv.com/site/ufx_format.html)
+* [Turye](https://wiki.xxiivv.com/site/turye.html)
