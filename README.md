@@ -3,15 +3,44 @@
 ## Edit
 
 ```bash
-$ uxncli turye.rom terminus.uf2
+$ ./edit.sh
 ```
 
 ![turye-terminus](etc/turye-terminus.png)
 
-## Convert
+## Convert UF2 to Tal
 
 ```bash
-$ bin/uf2-to-tal.sh
+$ ./build.sh
+```
+
+## Test Demo
+
+```bash
+$ ./test.sh
+```
+
+![terminal-demo](etc/terminal.png)
+
+## Repo
+
+```bash
+.
+├── LICENSE.md
+├── README.md
+├── bin
+│   ├── terminal.rom
+│   ├── terminal.rom.sym
+│   └── turye.rom
+├── build.sh
+├── edit.sh
+├── etc
+│   ├── terminal.png
+│   ├── terminal.tal
+│   └── turye-terminus.png
+├── terminus.tal
+├── terminus.uf2
+└── test.sh
 ```
 
 ## Info

@@ -1,0 +1,164 @@
+( GUI Terminal
+
+MIT License
+
+Copyright (c) Devine Lu Linvega, Ismael Venegas Castelló
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE. )
+
+( devices )
+|00 @System [
+	&vector $2  &expansion $2  &wst $1  &rst $1  &metadata $2  &r $2  &g $2
+	&b $2  &debug $1  &state $1 ]
+
+|20 @Screen [
+	&vector $2  &width $2  &height $2  &auto $2  &x $2  &y $2  &addr $2
+	&pixel $1  &sprite $1 ]
+
+|80 @Controller [ &vector $2  &button $1  &key $1 ]
+
+( variables )
+|0000 @buffer $80
+
+( init )
+|0100 ( -> )
+	( theme )
+	#3ce9 .System/r DEO2
+	#0b75 .System/g DEO2
+	#2b59 .System/b DEO2
+
+	#0050 .Screen/height DEO2
+	#01aa .Screen/width DEO2
+
+	( vectors )
+	;on-button .Controller/vector DEO2
+
+	( AUTO-Y-ADDR )
+	#06 .Screen/auto DEO
+	#01 ;draw-input JSR2
+
+	BRK
+
+@on-button ( -> )
+	.Controller/key DEI
+
+	DUP ,&no-null JCN
+		POP BRK
+		&no-null
+
+	DUP #0d NEQ ,&no-enter JCN
+		#00 ;draw-input JSR2
+		;validate JSR2
+		;buffer #0080 ;mclr JSR2
+		#01 ;draw-input JSR2
+		&no-enter
+
+	DUP #08 NEQ ,&no-backspace JCN
+		#00 ;draw-input JSR2
+		;buffer ;spop JSR2
+		#01 ;draw-input JSR2
+		&no-backspace
+
+	DUP STHk #1f GTH STHr #7b LTH #0101 NEQ2 ,&no-valid JCN
+		;buffer ;slen JSR2 #007f GTH2 ,&no-valid JCN
+			STHk ;buffer STHr ;sput JSR2
+			#01 ;draw-input JSR2
+			&no-valid
+
+	POP BRK
+
+@validate ( -- )
+	#0010 .Screen/x DEO2
+	.Screen/height DEI2 #0040 SUB2 .Screen/y DEO2
+
+	( clear )
+	#8000
+	&loop
+		#30 #00 ;draw-char JSR2
+		INC GTHk ,&loop JCN
+	POP2
+	#0010 .Screen/x DEO2
+
+	( respond )
+	;strings/you-said #02 ;draw-str JSR2
+	LIT 22 #02 ;draw-char JSR2
+	;buffer #03 ;draw-str JSR2
+	LIT 22 #02 ;draw-char JSR2
+	LIT ". #02 ;draw-char JSR2
+
+	JMP2r
+
+@draw-input ( color -- )
+	STH
+	#0010 .Screen/x DEO2
+	.Screen/height DEI2 #0020 SUB2 .Screen/y DEO2
+
+	( marker ) LIT "> #03 ;draw-char JSR2
+
+	;buffer STHr ;draw-str JSR2
+
+	JMP2r
+
+@draw-str ( str* color -- )
+	STH
+	&while
+		LDAk STHkr ,draw-char JSR
+		INC2 LDAk ,&while JCN
+	POP2
+	POPr
+
+	JMP2r
+
+@draw-char ( char color -- )
+	SWP
+	[ #20 SUB #00 SWP #40 SFT2 ;font-terminus/glyphs ADD2 ] .Screen/addr DEO2
+	.Screen/sprite DEOk DEO
+	.Screen/y DEI2 #0010 SUB2 .Screen/y DEO2
+	.Screen/x DEI2 #0008 ADD2 .Screen/x DEO2
+
+	JMP2r
+
+( utils )
+@slen ( str* -- len* )  DUP2 ,scap JSR SWP2 SUB2  JMP2r
+@sput ( str* char -- )  ROT ROT ,scap JSR STA  JMP2r
+
+@scap ( str* -- str-end* )
+	( clamp ) LDAk #00 NEQ JMP JMP2r
+	&while INC2 LDAk ,&while JCN
+
+	JMP2r
+
+@spop ( str* -- )
+	( clamp ) LDAk #00 NEQ JMP JMP2r
+	#00 ROT ROT ,scap JSR #0001 SUB2 STA
+
+	JMP2r
+
+@mclr ( addr* len* -- )
+	OVR2 ADD2 SWP2
+	&loop
+		STH2k #00 STH2r STA
+		INC2 GTH2k ,&loop JCN
+
+	POP2 POP2 JMP2r
+
+@strings
+	&you-said "You 20 "said: 20 $1
+
+~terminus.tal
