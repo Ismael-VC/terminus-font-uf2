@@ -42,7 +42,6 @@ $ bin/test.sh
 │   └── turye-terminus.png
 ├── rom
 │   ├── terminal.rom
-│   ├── terminal.rom.sym
 │   └── turye.rom
 ├── terminus.tal
 └── terminus.uf2
