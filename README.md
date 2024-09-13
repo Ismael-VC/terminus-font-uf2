@@ -3,7 +3,7 @@
 ## Edit
 
 ```bash
-$ ./edit.sh
+$ bin/edit.sh
 ```
 
 ![turye-terminus](etc/turye-terminus.png)
@@ -11,16 +11,18 @@ $ ./edit.sh
 ## Convert UF2 to Tal
 
 ```bash
-$ ./build.sh
+$ bin/build.sh
 ```
 
 ## Test Demo
 
 ```bash
-$ ./test.sh
+$ bin/test.sh
 ```
 
-![terminal-demo](etc/terminal.png)
+![terminal-demo-0](etc/demo0.png)
+![terminal-demo-1](etc/demo1.png)
+![terminal-demo-2](etc/demo2.png)
 
 ## Repo
 
@@ -29,18 +31,21 @@ $ ./test.sh
 ├── LICENSE.md
 ├── README.md
 ├── bin
+│   ├── build.sh
+│   ├── edit.sh
+│   └── test.sh
+├── etc
+│   ├── demo0.png
+│   ├── demo1.png
+│   ├── demo2.png
+│   ├── terminal.tal
+│   └── turye-terminus.png
+├── rom
 │   ├── terminal.rom
 │   ├── terminal.rom.sym
 │   └── turye.rom
-├── build.sh
-├── edit.sh
-├── etc
-│   ├── terminal.png
-│   ├── terminal.tal
-│   └── turye-terminus.png
 ├── terminus.tal
-├── terminus.uf2
-└── test.sh
+└── terminus.uf2
 ```
 
 ## Info
