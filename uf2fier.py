@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
+import subprocess
 from sys import argv
-
 
 class UF2Font:
     def __init__(self, name, data):
@@ -31,7 +31,7 @@ class UF2Font:
             "\t&widths [\n"
             + "\n".join(width_lines) + " ]\n"
             "\t&glyphs [\n"
-            + glyph_lines + " ]"
+            + glyph_lines + " ]\n"
         )
 
 
@@ -95,6 +95,22 @@ def parse_bdf_file(input_file):
     return UF2Font(name, data)
 
 
-font = parse_bdf_file(argv[1])
+def main(input_file):
+    # Parse BDF file
+    font = parse_bdf_file(input_file)
 
-print(font)
+    # Write the .tal file
+    tal_file = f"{input_file.split('.')[0]}.tal"
+    with open(tal_file, 'w') as file:
+        file.write(str(font))
+
+    # Assemble the .uf2 file
+    uf2_file = f"{input_file.split('.')[0]}.uf2"
+    subprocess.run(['uxnasm', tal_file, uf2_file], check=True)
+
+
+if __name__ == "__main__":
+    if len(argv) != 2:
+        print("Usage: python uf2fier.py <input-file.bdf>")
+    else:
+        main(argv[1])
